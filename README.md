@@ -19,37 +19,49 @@ User dapat login, membuat tutorial, menampilkannya secara publik, dan mengekspor
 ## 🚀 Cara Menjalankan
 ### 1. Clone & Install
 git clone https://github.com/your-repo/presentation-app.git
+
 cd presentation-app
+
 composer install
+
 npm install && npm run dev
+
 cp .env.example .env
+
 php artisan key:generate
 
 ### 2. Setup Database
-Atur koneksi database di .env
-
+#### Atur koneksi database di .env
 DB_DATABASE=presentation
+
 DB_USERNAME=root
+
 DB_PASSWORD=
 
-Jalankan migrasi
+#### Jalankan migrasi
 php artisan migrate
 
 ## 🔐 Akun Login Webservice
-Gunakan akun berikut untuk login:
+#### Gunakan akun berikut untuk login:
 
 Email    : aprilyani.safitri@gmail.com  
+
 Password : 123456
-Autentikasi via endpoint:
+
+#### Autentikasi via endpoint:
 https://jwt-auth-eight-neon.vercel.app/login
 
 ## 📄 API Webservice
 POST /login → Mendapatkan refreshToken
+
 GET /getMakul → Mendapatkan data mata kuliah (dengan refreshToken)
 
 ## 🛠 Teknologi
 Laravel 12.
+
 Blade Templates
+
 Laravel DomPDF
+
 Laravel Breeze
 HTTP Client (untuk akses Webservice)
