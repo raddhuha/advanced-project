@@ -14,14 +14,15 @@
 
         <div class="mb-4">
             <label class="block font-semibold">Kode Mata Kuliah / Kelas</label>
-            <select name="course_code" class="w-full border p-2 rounded" required>
+            <select name="course_code" id="course_select" class="w-full border p-2 rounded" required>
                 <option value="">Pilih Mata Kuliah</option>
                 @if(isset($courses) && is_array($courses))
                     @foreach($courses as $course)
-                        <option value="{{ $course['kdmk'] }}">{{ $course['kdmk'] }} - {{ $course['nama'] }}</option>
+                        <option value="{{ $course['kdmk'] }}" data-name="{{ $course['nama'] }}">{{ $course['kdmk'] }} - {{ $course['nama'] }}</option>
                     @endforeach
                 @endif
             </select>
+            <input type="hidden" name="course_name" id="course_name">
         </div>
 
         <div class="flex justify-end">
@@ -32,4 +33,12 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('course_select').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const courseName = selectedOption.getAttribute('data-name');
+        document.getElementById('course_name').value = courseName;
+    });
+</script>
 @endsection

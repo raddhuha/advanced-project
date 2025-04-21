@@ -11,12 +11,6 @@ use PDF;
 
 class MasterTutorialController extends Controller
 {
-    public function index()
-    {
-        $tutorials = MasterTutorial::all();
-        return view('tutorials.index', compact('tutorials'));
-    }
-
     public function create()
     {
         // Fetch courses from webservice
@@ -30,17 +24,20 @@ class MasterTutorialController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'course_code' => 'required|string|max:50',
+            'course_name' => 'required|string|max:255',
         ]);
 
         $userEmail = Auth::user()->email;
 
         // Generate unique URLs
-        $urlPresentation = $this->generateUniqueUrl('url_presentation');
-        $urlFinished = $this->generateUniqueUrl('url_finished');
+        $urlPresentation = $this->generateUniqueUrl('url_presentation', $request->course_code, $request->title);
+        $urlFinished = $this->generateUniqueUrl('url_finished', $request->course_code, $request->title);
+
 
         MasterTutorial::create([
             'title' => $request->title,
             'course_code' => $request->course_code,
+            'course_name' => $request->course_name,
             'url_presentation' => $urlPresentation,
             'url_finished' => $urlFinished,
             'creator_email' => $userEmail,
@@ -70,10 +67,11 @@ class MasterTutorialController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'course_code' => 'required|string|max:50',
+            'course_name' => 'required|string|max:255',
         ]);
 
         $tutorial = MasterTutorial::findOrFail($id);
-        $tutorial->update($request->only('title', 'course_code'));
+        $tutorial->update($request->only('title', 'course_code', 'course_name'));
 
         return redirect()->route('dashboard')->with('success', 'Tutorial berhasil diperbarui');
     }
@@ -106,24 +104,33 @@ class MasterTutorialController extends Controller
             $query->orderBy('order');
         }])->where('url_finished', $url_finished)->firstOrFail();
 
-        $pdf = PDF::loadView('tutorials.export', compact('tutorial'));
+        // Process image paths for PDF
+        foreach ($tutorial->detailTutorials as $step) {
+            if ($step->type === 'image') {
+                // Convert storage paths to absolute file system paths
+                $step->absolute_image_path = storage_path('app/public/' . $step->content);
+
+                // For debugging
+                \Log::info('Image path for PDF: ' . $step->absolute_image_path);
+                \Log::info('Image exists: ' . (file_exists($step->absolute_image_path) ? 'Yes' : 'No'));
+            }
+        }
+
+        $pdf = \PDF::loadView('tutorials.export', compact('tutorial'));
+
+        // Configure PDF options for better image handling
+        $pdf->setOption('enable-local-file-access', true);
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
         return $pdf->download('tutorial-'.$tutorial->title.'.pdf');
     }
 
-    /**
-     * Generate unique URL for tutorial
-     *
-     * @param string $field Field name to check uniqueness
-     * @return string
-     */
-    private function generateUniqueUrl($field)
+    private function generateUniqueUrl($field, $courseCode, $title)
     {
-        $url = Str::random(10);
-
-        // Check if URL already exists
-        while (MasterTutorial::where($field, $url)->exists()) {
-            $url = Str::random(10);
-        }
+        $slugTitle = Str::slug($title); // Ubah jadi lowercase dan strip
+        do {
+            $url = "{$courseCode}-{$slugTitle}-" . Str::random(10);
+        } while (MasterTutorial::where($field, $url)->exists());
 
         return $url;
     }

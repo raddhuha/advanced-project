@@ -2,11 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PublicController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\JwtAuthController;
 use App\Http\Controllers\DetailTutorialController;
 use App\Http\Controllers\MasterTutorialController;
-use App\Http\Controllers\Auth\JwtAuthController;
+use App\Http\Controllers\Api\TutorialApiController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -18,10 +18,6 @@ Route::post('/jwt-logout', [JwtAuthController::class, 'logout'])->name('jwt.logo
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Tutorial routes
     Route::resource('tutorials', MasterTutorialController::class);
@@ -39,4 +35,5 @@ Route::get('/presentation/{url}', [PublicController::class, 'presentation'])->na
 Route::get('/finished/{url}', [PublicController::class, 'finished'])->name('public.finished');
 Route::get('/presentation/pdf/{url_finished}', [MasterTutorialController::class, 'exportPdf'])->name('public.finished.pdf');
 
-require __DIR__.'/auth.php';
+Route::get('/api/{kode_matkul}', [TutorialApiController::class, 'getByKodeMatkul']);
+

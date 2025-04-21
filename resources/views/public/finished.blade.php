@@ -3,7 +3,8 @@
 @section('content')
 <div class="max-w-4xl mx-auto p-6">
     <h1 class="text-3xl font-bold">{{ $tutorial->title }}</h1>
-    <p class="mt-2 text-gray-600">Course Code: {{ $tutorial->course_code }}</p>
+    <p class="mt-2 text-gray-600">Kode Kelas : {{ $tutorial->course_code }}</p>
+    <p class="mt-2 text-gray-600">Mata Kuliah : {{ $tutorial->course_name }}</p>
     {{-- pdf --}}
     <div class="mt-4 mb-6 text-right">
         <a href="{{ route('public.finished.pdf', $tutorial->url_finished) }}" target="_blank"

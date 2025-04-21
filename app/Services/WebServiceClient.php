@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\Auth;
 
 class WebServiceClient
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
     /**
      * Get the list of courses from the webservice.
      *

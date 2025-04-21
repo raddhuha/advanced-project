@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
-use App\Models\User;
 
 class JwtAuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Handle an authentication attempt.
      *
@@ -25,51 +32,34 @@ class JwtAuthController extends Controller
         ]);
 
         try {
-            // Make request to JWT authentication service
-            $response = Http::post('https://jwt-auth-eight-neon.vercel.app/login', [
-                'email' => $request->email,
-                'password' => $request->password,
-            ]);
+            $authData = $this->authService->login($request->email, $request->password);
 
-            // Check if the request was successful
-            if ($response->successful()) {
-                $responseData = $response->json();
-
-                // Check if we have the refreshToken in the response
-                if (isset($responseData['refreshToken'])) {
-                    $refreshToken = $responseData['refreshToken'];
-
-                    // Get or create user in our local database
-                    $user = User::firstOrCreate(
-                        ['email' => $request->email],
-                        [
-                            'name' => $responseData['user']['name'] ?? 'User',
-                            'password' => bcrypt($request->password), // Store hashed password
-                        ]
-                    );
-
-                    // Store the refresh token in the database
-                    $user->refresh_token = $refreshToken;
-                    $user->save();
-
-                    // Manually log in the user
-                    Auth::login($user);
-
-                    $request->session()->regenerate();
-
-                    return redirect()->intended('dashboard');
-                }
+            if (!$authData) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
+                ]);
             }
 
-            // If the response was not successful or didn't contain a refreshToken
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            // Get or create user in our local database
+            $user = User::updateOrCreate(
+                ['email' => $request->email],
+                [
+                    'name' => $authData['user']['name'] ?? 'User',
+                    'refresh_token' => $authData['refreshToken'],
+                ]
+            );
 
+            // Manually log in the user
+            Auth::login($user);
+
+            $request->session()->regenerate();
+
+            return redirect()->intended('dashboard')->with('success', 'Berhasil login!');
+
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            throw ValidationException::withMessages([
-                'email' => ['Authentication failed. Please try again.'],
-            ]);
+            return back()->with('error', 'Authentication failed. Please try again.');
         }
     }
 

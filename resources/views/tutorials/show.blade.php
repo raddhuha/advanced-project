@@ -38,7 +38,7 @@
             @csrf
             <div class="mt-3">
                 <label for="order" class="block text-sm font-medium text-gray-700">Urutan</label>
-                <input type="number" name="order" id="order" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" min="1" value="{{ $tutorial->detailTutorials->count() + 1 }}">
+                <input type="number" name="order" id="order" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" min="1" value="{{ $tutorial->detailTutorials->count() + 1 }}" readonly>
             </div>
 
             <div class="mt-3">

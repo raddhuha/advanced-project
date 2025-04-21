@@ -3,7 +3,8 @@
 @section('content')
 <div class="max-w-4xl mx-auto p-6">
     <h1 class="text-3xl font-bold">{{ $tutorial->title }}</h1>
-    <p class="mt-2 text-gray-600">Course Code: {{ $tutorial->ourse_code }}</p>
+    <p class="mt-2 text-gray-600">Kode Kelas : {{ $tutorial->course_code }}</p>
+    <p class="mt-2 text-gray-600">Mata Kuliah : {{ $tutorial->course_name }}</p>
 
     <h2 class="text-xl mt-6 font-semibold">Langkah-langkah:</h2>
     <div class="space-y-4 mt-4" id="tutorial-steps">

@@ -18,7 +18,7 @@
             <select name="course_code" class="w-full border border-gray-300 p-2 rounded" required>
                 @if(isset($courses) && is_array($courses))
                     @foreach($courses as $course)
-                        <option value="{{ $course['kdmk'] }}" {{ $tutorial->course_code == $course['kdmk'] ? 'selected' : '' }}>
+                        <option value="{{ $course['kdmk'] }}" data-name="{{ $course['nama'] }}" {{ $tutorial->course_code == $course['kdmk'] ? 'selected' : '' }}>
                             {{ $course['kdmk'] }} - {{ $course['nama'] }}
                         </option>
                     @endforeach
@@ -26,6 +26,7 @@
                     <option value="{{ $tutorial->course_code }}" selected>{{ $tutorial->course_code }}</option>
                 @endif
             </select>
+            <input type="hidden" name="course_name" id="course_name" value="{{ $tutorial->course_name }}">
         </div>
 
         <div class="flex space-x-2">
@@ -34,4 +35,22 @@
         </div>
     </form>
 </div>
+
+<script>
+    // Set course_name on page load for selected option
+    window.addEventListener('DOMContentLoaded', function() {
+        const selectedOption = document.querySelector('#course_select option:checked');
+        if (selectedOption) {
+            const courseName = selectedOption.getAttribute('data-name');
+            document.getElementById('course_name').value = courseName;
+        }
+    });
+
+    // Update course_name when selection changes
+    document.getElementById('course_select').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const courseName = selectedOption.getAttribute('data-name');
+        document.getElementById('course_name').value = courseName;
+    });
+</script>
 @endsection

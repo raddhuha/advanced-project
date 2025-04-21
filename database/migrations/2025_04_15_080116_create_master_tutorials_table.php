@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('course_code');
+            $table->string('course_name');
             $table->string('url_presentation')->unique();
             $table->string('url_finished')->unique();
             $table->string('creator_email');
