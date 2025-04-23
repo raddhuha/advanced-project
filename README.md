@@ -18,13 +18,15 @@ User dapat login, membuat tutorial, menampilkannya secara publik, dan mengekspor
 
 ## 🚀 Cara Menjalankan
 ### 1. Clone & Install
-git clone https://github.com/your-repo/presentation-app.git
+git clone https://github.com/raddhuha/advanced-project.git
 
-cd presentation-app
+cd advanced-project
 
 composer install
 
-npm install && npm run dev
+npm install
+
+npm run dev
 
 cp .env.example .env
 
@@ -32,24 +34,20 @@ php artisan key:generate
 
 ### 2. Setup Database
 #### Atur koneksi database di .env
-DB_DATABASE=presentation
-
-DB_USERNAME=root
-
-DB_PASSWORD=
+- DB_DATABASE=presentation
+- DB_USERNAME=root
+- DB_PASSWORD=
 
 #### Jalankan migrasi
 php artisan migrate
 
 ## 🔐 Akun Login Webservice
-#### Gunakan akun berikut untuk login:
-
-Email    : aprilyani.safitri@gmail.com  
-
-Password : 123456
-
-#### Autentikasi via endpoint:
-https://jwt-auth-eight-neon.vercel.app/login
+Gunakan akun berikut untuk login:
+- Email    : aprilyani.safitri@gmail.com  
+- Password : 123456
+  
+Autentikasi via endpoint:
+- https://jwt-auth-eight-neon.vercel.app/login
 
 ## 📄 API Webservice
 POST /login → Mendapatkan refreshToken
