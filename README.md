@@ -15,6 +15,7 @@ User dapat login, membuat tutorial, menampilkannya secara publik, dan mengekspor
 - ✅ DataTable Dashboard dengan data mata kuliah dari webservice
 - ✅ Status Show/Hide per detail tutorial
 - ✅ Validasi URL unik (presentation & finished)
+- ✅ Webservice Server untuk menangani request data dari luar
 
 ## 🚀 Cara Menjalankan
 ### 1. Clone & Install
